@@ -2,6 +2,7 @@ package com.javaweb2.controller;
 
 import com.javaweb2.dto.CreateSupplierRequest;
 import com.javaweb2.dto.SupplierDTO;
+import com.javaweb2.dto.WorkerDTO;
 import com.javaweb2.service.SupplierService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -32,5 +33,18 @@ public class SupplierController {
     @GetMapping("/{id}")
     public SupplierDTO getSupplier(@PathVariable Long id) {
         return supplierService.getSupplier(id);
+    }
+
+    @PostMapping("/{supplierId}/add-worker/{workerId}")
+    public SupplierDTO addWorkerToSupplier(
+            @PathVariable Long supplierId,
+            @PathVariable Long workerId
+    ) {
+        return supplierService.addWorkerToSupplier(supplierId, workerId);
+    }
+
+    @GetMapping("/{id}/workers")
+    public List<WorkerDTO> getAllWorkers(@PathVariable Long id) {
+        return supplierService.getAllWorkersBySupplier(id);
     }
 }

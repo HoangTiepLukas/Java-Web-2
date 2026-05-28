@@ -1,5 +1,6 @@
 package com.javaweb2.dto;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -7,5 +8,6 @@ import lombok.Setter;
 @Setter
 public class AcceptOfferRequest {
 
-    private boolean accepted;
+    @NotNull
+    private Long customerId;
 }

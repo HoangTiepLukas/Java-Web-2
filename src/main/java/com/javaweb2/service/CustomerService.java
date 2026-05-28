@@ -4,7 +4,9 @@ import com.javaweb2.dto.CreateCustomerRequest;
 import com.javaweb2.dto.CustomerDTO;
 import com.javaweb2.entity.Customer;
 import com.javaweb2.repository.CustomerRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -23,7 +25,7 @@ public class CustomerService {
         customer.setName(request.getName());
         customer.setEmail(request.getEmail());
         customer.setPassword(request.getPassword());
-        customer.setCreated_at(LocalDateTime.now());
+        customer.setCreatedAt(LocalDateTime.now());
 
         Customer createdCustomer = customerRepository.save(customer);
 
@@ -35,8 +37,8 @@ public class CustomerService {
     }
 
     public CustomerDTO getCustomer(Long id) {
-        Customer customer = customerRepository.findById(id).orElseThrow(() -> new RuntimeException("Customer not found"));
-
+        Customer customer = customerRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found"));
         return mapToDTO(customer);
     }
 
@@ -45,7 +47,7 @@ public class CustomerService {
                 .id(customer.getId())
                 .name(customer.getName())
                 .email(customer.getEmail())
-                .created_at(customer.getCreated_at())
+                .createdAt(customer.getCreatedAt())
                 .build();
     }
 }

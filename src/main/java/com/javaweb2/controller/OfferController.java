@@ -40,18 +40,18 @@ public class OfferController {
     @PatchMapping("/{id}")
     public OfferDTO updateOffer(
             @PathVariable Long id,
+            @Valid
             @RequestBody UpdateOfferRequest request
     ) {
-
         return offerService.updateOffer(id, request);
     }
 
     @PostMapping("/{id}/accept-offer")
     public OfferDTO acceptOffer(
             @PathVariable Long id,
+            @Valid
             @RequestBody AcceptOfferRequest request
     ) {
-
         return offerService.acceptOffer(id, request);
     }
 
@@ -70,15 +70,14 @@ public class OfferController {
     @PostMapping("/{id}/accept-delivery")
     public OfferDTO acceptDelivery(
             @PathVariable Long id,
+            @Valid
             @RequestBody AcceptDeliveryRequest request
     ) {
-
         return offerService.acceptDelivery(id, request);
     }
 
     @PostMapping("/{id}/invoice")
     public OfferDTO invoiceOffer(@PathVariable Long id) {
-
         return offerService.invoiceOffer(id);
     }
 }

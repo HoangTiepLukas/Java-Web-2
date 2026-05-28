@@ -29,8 +29,8 @@ public class Offer {
     @Column(nullable = false)
     private OfferStatus status;
 
-    @Column(name = "created_at", nullable = false)
-    private LocalDateTime created_at;
+    @Column(name = "createdAt", nullable = false)
+    private LocalDateTime createdAt;
 
     @ManyToOne
     @JoinColumn(name = "supplier_id", nullable = false)

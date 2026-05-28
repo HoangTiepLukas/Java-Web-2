@@ -104,12 +104,17 @@ paths:
                 $ref: "#/components/schemas/SupplierDTO"
         "404":
           description: Supplier not found
-  /suppliers/add-worker/{id}:
+  /suppliers/{supplierId}/add-worker/{workerId}:
     post:
       summary: Add worker to supplier
       operationId: addWorkerToSupplier
       parameters:
-        - name: id
+        - name: supplierId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: workerId
           in: path
           required: true
           schema:
@@ -121,6 +126,25 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/SupplierDTO"
+  /suppliers/{id}/workers:
+    get:
+      summary: Get all workers for supplier
+      operationId: getAllWorkersBySupplier
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of workers for the supplier
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/WorkerDTO"
   /workers:
     get:
       summary: List all workers

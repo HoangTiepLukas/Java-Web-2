@@ -8,7 +8,9 @@ import com.javaweb2.entity.Supplier;
 import com.javaweb2.repository.CustomerRepository;
 import com.javaweb2.repository.OfferRepository;
 import com.javaweb2.repository.SupplierRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -31,9 +33,9 @@ public class OfferService {
 
     public OfferDTO createOffer(CreateOfferRequest request) {
         Supplier supplier = supplierRepository.findById(request.getSupplierId())
-                .orElseThrow(() -> new RuntimeException("Supplier not found"));
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Supplier not found"));
         Customer customer = customerRepository.findById(request.getCustomerId())
-                .orElseThrow(() -> new RuntimeException("Customer not found"));
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found"));
 
         Offer offer = new Offer();
 
@@ -45,7 +47,7 @@ public class OfferService {
         offer.setCustomer(customer);
 
         offer.setStatus(OfferStatus.CREATED);
-        offer.setCreated_at(LocalDateTime.now());
+        offer.setCreatedAt(LocalDateTime.now());
 
         Offer savedOffer = offerRepository.save(offer);
 
@@ -57,12 +59,14 @@ public class OfferService {
     }
 
     public OfferDTO getOffer(Long id) {
-        Offer offer = offerRepository.findById(id).orElseThrow(() -> new RuntimeException("Offer not found"));
+        Offer offer = offerRepository.findById(id)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Offer not found"));
         return mapToDTO(offer);
     }
 
     public OfferDTO updateOffer(Long id, UpdateOfferRequest request) {
-        Offer offer = offerRepository.findById(id).orElseThrow(() -> new RuntimeException("Offer not found"));
+        Offer offer = offerRepository.findById(id)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Offer not found"));
 
         offer.setTitle(request.getTitle());
         offer.setDescription(request.getDescription());
@@ -74,11 +78,18 @@ public class OfferService {
     }
 
     public OfferDTO acceptOffer(Long id, AcceptOfferRequest request) {
-        Offer offer = offerRepository.findById(id).orElseThrow(() -> new RuntimeException("Offer not found"));
+        Offer offer = offerRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Offer not found"));
 
-        if (request.isAccepted()) {
-            offer.setStatus(OfferStatus.ACCEPTED);
+        if (offer.getCustomer() == null || !offer.getCustomer().getId().equals(request.getCustomerId())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Customer does not match offer");
         }
+
+        if (offer.getStatus() != OfferStatus.CREATED) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Offer can only be accepted from CREATED status");
+        }
+
+        offer.setStatus(OfferStatus.CUSTOMER_ACCEPTED);
 
         Offer acceptedOffer = offerRepository.save(offer);
 
@@ -86,10 +97,11 @@ public class OfferService {
     }
 
     public OfferDTO startWork(Long id) {
-        Offer offer = offerRepository.findById(id).orElseThrow(() -> new RuntimeException("Offer not found"));
+        Offer offer = offerRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Offer not found"));
 
-        if (offer.getStatus() != OfferStatus.ACCEPTED) {
-            throw new RuntimeException("Work can only start if offer is accepted");
+        if (offer.getStatus() != OfferStatus.CUSTOMER_ACCEPTED) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Work can only start if offer is customer accepted");
         }
 
         offer.setStatus(OfferStatus.IN_PROGRESS);
@@ -100,10 +112,11 @@ public class OfferService {
     }
 
     public OfferDTO deliverWork(Long id) {
-        Offer offer = offerRepository.findById(id).orElseThrow(() -> new RuntimeException("Offer not found"));
+        Offer offer = offerRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Offer not found"));
 
         if (offer.getStatus() != OfferStatus.IN_PROGRESS) {
-            throw new RuntimeException("Offer must be in progress before delivery");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Offer must be in progress before delivery");
         }
 
         offer.setStatus(OfferStatus.DELIVERED);
@@ -113,17 +126,18 @@ public class OfferService {
     }
 
     public OfferDTO acceptDelivery(Long id, AcceptDeliveryRequest request) {
-        Offer offer = offerRepository.findById(id).orElseThrow(() -> new RuntimeException("Offer not found"));
+        Offer offer = offerRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Offer not found"));
 
         if (offer.getStatus() != OfferStatus.DELIVERED) {
-            throw new RuntimeException(
-                    "Offer must be delivered before acceptance"
-            );
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Offer must be delivered before acceptance");
         }
 
-        if (request.isAccepted()) {
-            offer.setStatus(OfferStatus.DELIVERY_ACCEPTED);
+        if (offer.getCustomer() == null || !offer.getCustomer().getId().equals(request.getCustomerId())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Customer does not match offer");
         }
+
+        offer.setStatus(OfferStatus.DELIVERY_ACCEPTED);
 
         Offer updatedOffer = offerRepository.save(offer);
 
@@ -131,10 +145,11 @@ public class OfferService {
     }
 
     public OfferDTO invoiceOffer(Long id) {
-        Offer offer = offerRepository.findById(id).orElseThrow(() -> new RuntimeException("Offer not found"));
+        Offer offer = offerRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Offer not found"));
 
-        if(offer.getStatus() != OfferStatus.DELIVERY_ACCEPTED) {
-            throw new RuntimeException("Offer can not be invoiced yet");
+        if (offer.getStatus() != OfferStatus.DELIVERY_ACCEPTED) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Offer can not be invoiced yet");
         }
 
         offer.setStatus(OfferStatus.INVOICED);
@@ -144,16 +159,15 @@ public class OfferService {
     }
 
     private OfferDTO mapToDTO(Offer offer) {
-
         return OfferDTO.builder()
                 .id(offer.getId())
                 .title(offer.getTitle())
                 .description(offer.getDescription())
                 .price(offer.getPrice())
-                .status(offer.getStatus().name())
-                .supplierName(offer.getSupplier().getName())
-                .customerName(offer.getCustomer().getName())
-                .createdAt(offer.getCreated_at())
+                .customerId(offer.getCustomer() == null ? null : offer.getCustomer().getId())
+                .supplierId(offer.getSupplier() == null ? null : offer.getSupplier().getId())
+                .status(offer.getStatus())
+                .createdAt(offer.getCreatedAt())
                 .build();
     }
 }
