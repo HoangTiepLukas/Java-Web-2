@@ -45,15 +45,12 @@ public class WorkerService {
 	}
 
 	private WorkerDTO mapToDTO(Worker worker) {
-		WorkerDTO workerDTO = new WorkerDTO();
-		workerDTO.id = worker.getId();
-		if (worker.getSupplier() != null) {
-			workerDTO.supplierId = worker.getSupplier().getId();
-		}
-		workerDTO.name = worker.getName();
-		workerDTO.email = worker.getEmail();
-		workerDTO.role = worker.getRole();
-		workerDTO.createdAt = worker.getCreatedAt();
-		return workerDTO;
+		return WorkerDTO.builder()
+				.id(worker.getId())
+				.name(worker.getName())
+				.email(worker.getEmail())
+				.role(worker.getRole())
+				.createdAt(worker.getCreatedAt())
+				.build();
 	}
 }

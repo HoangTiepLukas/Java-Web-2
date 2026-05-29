@@ -79,18 +79,18 @@ public class InvoiceService {
 	}
 
 	private InvoiceDTO mapToDTO(Invoice invoice) {
-		InvoiceDTO invoiceDTO = new InvoiceDTO();
-		invoiceDTO.id = invoice.getId();
-		invoiceDTO.offerId = invoice.getOffer() == null ? null : invoice.getOffer().getId();
-		invoiceDTO.customerId = invoice.getCustomer() == null ? null : invoice.getCustomer().getId();
-		invoiceDTO.supplierId = invoice.getSupplier() == null ? null : invoice.getSupplier().getId();
-		invoiceDTO.invoiceNumber = invoice.getInvoiceNumber();
-		invoiceDTO.amount = invoice.getAmount();
-		invoiceDTO.issuedAt = invoice.getIssuedAt() == null ? null : invoice.getIssuedAt().atZone(ZoneOffset.UTC).toLocalDate();
-		invoiceDTO.dueDate = invoice.getDueDate() == null ? null : invoice.getDueDate().atZone(ZoneOffset.UTC).toLocalDate();
-		invoiceDTO.status = invoice.getStatus() == null ? null : invoice.getStatus().name();
-		invoiceDTO.createdAt = invoice.getCreatedAt();
-		return invoiceDTO;
+		return InvoiceDTO.builder()
+				.id(invoice.getId())
+				.customerId(invoice.getCustomer().getId())
+				.supplierId(invoice.getSupplier().getId())
+				.offerId(invoice.getOffer().getId())
+				.invoiceNumber(invoice.getInvoiceNumber())
+				.amount(invoice.getAmount())
+				.issuedAt(invoice.getIssuedAt())
+				.dueDate(invoice.getDueDate())
+				.status(invoice.getStatus())
+				.createdAt(invoice.getCreatedAt())
+				.build();
 	}
 
 	private LocalDateTime toLocalDateTime(LocalDate date) {

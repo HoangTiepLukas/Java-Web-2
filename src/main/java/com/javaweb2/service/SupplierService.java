@@ -19,6 +19,8 @@ public class SupplierService {
     private final SupplierRepository supplierRepository;
     private final WorkerRepository workerRepository;
 
+    private static final String SUPPLIERNOTFOUND = "Supplier not found";
+
     public SupplierService(SupplierRepository supplierRepository, WorkerRepository workerRepository) {
         this.supplierRepository = supplierRepository;
         this.workerRepository = workerRepository;
@@ -44,13 +46,13 @@ public class SupplierService {
 
     public SupplierDTO getSupplier(Long id) {
         Supplier supplier = supplierRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Supplier not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, SUPPLIERNOTFOUND));
         return mapToDTO(supplier);
     }
 
     public SupplierDTO addWorkerToSupplier(Long supplierId, Long workerId) {
         Supplier supplier = supplierRepository.findById(supplierId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Supplier not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, SUPPLIERNOTFOUND));
 
         Worker worker = workerRepository.findById(workerId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Worker not found"));
@@ -64,7 +66,7 @@ public class SupplierService {
 
     public List<WorkerDTO> getAllWorkersBySupplier(Long supplierId) {
         Supplier supplier = supplierRepository.findById(supplierId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Supplier not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, SUPPLIERNOTFOUND));
 
         return supplier.getWorkers().stream()
                 .map(this::mapWorkerToDTO)
@@ -83,15 +85,13 @@ public class SupplierService {
     }
 
     private WorkerDTO mapWorkerToDTO(Worker worker) {
-        WorkerDTO workerDTO = new WorkerDTO();
-        workerDTO.id = worker.getId();
-        if (worker.getSupplier() != null) {
-            workerDTO.supplierId = worker.getSupplier().getId();
-        }
-        workerDTO.name = worker.getName();
-        workerDTO.email = worker.getEmail();
-        workerDTO.role = worker.getRole();
-        workerDTO.createdAt = worker.getCreatedAt();
-        return workerDTO;
+        return WorkerDTO.builder()
+                .id(worker.getId())
+                .name(worker.getName())
+                .email(worker.getEmail())
+                .role(worker.getRole())
+                .createdAt(worker.getCreatedAt())
+                .build();
+
     }
 }

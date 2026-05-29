@@ -4,8 +4,8 @@ import com.javaweb2.entity.InvoiceStatus;
 import lombok.Builder;
 import lombok.Getter;
 
+
 import java.math.BigDecimal;
-import java.time.LocalDate;
 
 import java.time.LocalDateTime;
 
@@ -24,9 +24,9 @@ public class InvoiceDTO {
 
     public BigDecimal amount;
 
-    public LocalDate issuedAt;
+    public LocalDateTime issuedAt;
 
-    public LocalDate dueDate;
+    public LocalDateTime dueDate;
 
     public InvoiceStatus status;
 
