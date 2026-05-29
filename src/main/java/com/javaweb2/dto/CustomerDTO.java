@@ -9,8 +9,12 @@ import java.time.LocalDateTime;
 @Builder
 public class CustomerDTO {
     private Long id;
+
     private String name;
+
     private String email;
-//    private String password;
-    private LocalDateTime created_at;
+
+    private String password;
+
+    private LocalDateTime createdAt;
 }

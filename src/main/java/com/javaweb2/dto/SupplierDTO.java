@@ -9,8 +9,16 @@ import java.time.LocalDateTime;
 @Builder
 public class SupplierDTO {
     private Long id;
+
     private String name;
+
     private String email;
-//    private String password;
-    private LocalDateTime created_at;
+
+    private String password;
+
+    private String description;
+
+    private String services;
+
+    private LocalDateTime createdAt;
 }

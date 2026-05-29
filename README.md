@@ -1,7 +1,7 @@
 # Java Web Spring Boot 2
 **This project is a Spring Boot REST API using PostgreSQL, Flyway, Spring Data JPA, and Lombok.**
 
-![Data Model](documentation/datamodel.svg)
+![Data Model](documentation/data_model_diagram.drawio.png)
 
 **The application contains 3 main relational tables:**
 - Customer

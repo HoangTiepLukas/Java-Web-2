@@ -1,20 +1,24 @@
 package com.javaweb2.entity;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Getter
 @Setter
 @Entity
-@Table(name = "supplier")
-public class Supplier {
+@Table(name = "worker")
+public class Worker {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "supplier_id")
+    private Supplier supplier;
 
     @Column(nullable = false)
     private String name;
@@ -25,19 +29,9 @@ public class Supplier {
     @Column(nullable = false)
     private String password;
 
-    @Column(columnDefinition = "TEXT")
-    private String description;
-
     @Column(nullable = false)
-    private String services;
+    private String role;
 
     @Column(name = "createdAt", nullable = false)
     private LocalDateTime createdAt;
-
-    @OneToMany(mappedBy = "supplier")
-    private List<Offer> offers;
-
-    @OneToMany(mappedBy = "supplier")
-    private List<Worker> workers;
-
 }

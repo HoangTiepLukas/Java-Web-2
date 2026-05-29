@@ -24,19 +24,16 @@ public class CustomerController {
     public CustomerDTO createCustomer(
             @Valid @RequestBody CreateCustomerRequest request
     ) {
-
         return customerService.createCustomer(request);
     }
 
     @GetMapping
     public List<CustomerDTO> listCustomers() {
-
         return customerService.listCustomers();
     }
 
     @GetMapping("/{id}")
     public CustomerDTO getCustomer(@PathVariable Long id) {
-
         return customerService.getCustomer(id);
     }
 }

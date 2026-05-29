@@ -2,12 +2,12 @@ package com.javaweb2.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
-@Builder
-public class CreateSupplierRequest {
+@Setter
+public class CreateWorkerRequest {
     @NotBlank
     private String name;
 
@@ -18,8 +18,5 @@ public class CreateSupplierRequest {
     @NotBlank
     private String password;
 
-    private String description;
-
-    @NotBlank
-    private String services;
+    private String role;
 }

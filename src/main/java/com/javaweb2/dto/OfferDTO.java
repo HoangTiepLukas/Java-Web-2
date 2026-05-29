@@ -1,5 +1,6 @@
 package com.javaweb2.dto;
 
+import com.javaweb2.entity.OfferStatus;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -18,11 +19,11 @@ public class OfferDTO {
 
     private BigDecimal price;
 
-    private String status;
+    private Long customerId;
 
-    private String supplierName;
+    private Long supplierId;
 
-    private String customerName;
+    private OfferStatus status;
 
     private LocalDateTime createdAt;
 }
