@@ -1,11 +1,16 @@
 package com.javaweb2.dto;
 
 import com.javaweb2.entity.InvoiceStatus;
+import lombok.Builder;
+import lombok.Getter;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import java.time.LocalDateTime;
 
+@Getter
+@Builder
 public class InvoiceDTO {
     public Long id;
 
@@ -23,7 +28,7 @@ public class InvoiceDTO {
 
     public LocalDate dueDate;
 
-    public String status;
+    public InvoiceStatus status;
 
     public LocalDateTime createdAt;
 }
