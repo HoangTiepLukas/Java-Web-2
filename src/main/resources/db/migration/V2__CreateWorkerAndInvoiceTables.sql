@@ -1,12 +1,8 @@
-CREATE TABLE supplier (
-    id BIGSERIAL PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    email VARCHAR(255) NOT NULL UNIQUE,
-    password VARCHAR(255) NOT NULL,
-    description VARCHAR(255),
-    services VARCHAR(255) NOT NULL ,
-    createdAt TIMESTAMP NOT NULL
-);
+ALTER TABLE supplier
+    ADD COLUMN description VARCHAR(255);
+
+ALTER TABLE supplier
+    ADD COLUMN services VARCHAR(255);
 
 CREATE TABLE worker (
     id BIGSERIAL PRIMARY KEY,
@@ -14,64 +10,35 @@ CREATE TABLE worker (
     email VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
     role VARCHAR(50),
-    supplierId BIGINT,
-    createdAt TIMESTAMP NOT NULL,
+    supplier_id BIGINT,
+    created_at TIMESTAMP NOT NULL,
 
     CONSTRAINT fk_worker_supplier
-        FOREIGN KEY (supplierId)
+        FOREIGN KEY (supplier_id)
             REFERENCES supplier(id)
 );
 
-CREATE TABLE customer (
-    id BIGSERIAL PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    email VARCHAR(255) NOT NULL UNIQUE,
-    password VARCHAR(255) NOT NULL,
-    createdAt TIMESTAMP NOT NULL
-);
-
-CREATE TABLE offer (
-    id BIGSERIAL PRIMARY KEY,
-    title VARCHAR(255) NOT NULL,
-    description TEXT,
-    price DECIMAL(10,2) NOT NULL,
-
-    supplierId BIGINT NOT NULL,
-    customerId BIGINT NOT NULL,
-
-    status VARCHAR(50) NOT NULL,
-    createdAt TIMESTAMP NOT NULL,
-
-    CONSTRAINT fk_offer_supplier
-       FOREIGN KEY (supplierId)
-           REFERENCES supplier(id),
-
-    CONSTRAINT fk_offer_customer
-       FOREIGN KEY (customerId)
-           REFERENCES customer(id)
-);
-
 CREATE TABLE invoice (
-     id BIGINT PRIMARY KEY,
-     supplierId BIGINT NOT NULL,
-     customerId BIGINT NOT NULL,
-     offerId BIGINT NOT NULL,
-     invoiceNumber BIGINT NOT NULL,
-     amount DECIMAL(10, 2) NOT NULL,
-     issuedAt TIMESTAMP NOT NULL,
-     dueDate TIMESTAMP NOT NULL,
-     status VARCHAR(50) NOT NULL,
-     createdAt TIMESTAMP NOT NULL,
+    id BIGSERIAL PRIMARY KEY,
+    supplier_id BIGINT NOT NULL,
+    customer_id BIGINT NOT NULL,
+    offer_id BIGINT NOT NULL,
+    invoice_number BIGINT NOT NULL,
+    amount DECIMAL(10,2) NOT NULL,
+    issued_at TIMESTAMP NOT NULL,
+    due_date TIMESTAMP NOT NULL,
+    status VARCHAR(50) NOT NULL,
+    created_at TIMESTAMP NOT NULL,
 
-     CONSTRAINT fk_invoice_supplier
-         FOREIGN KEY (supplierId)
-             REFERENCES supplier(id),
+    CONSTRAINT fk_invoice_supplier
+        FOREIGN KEY (supplier_id)
+            REFERENCES supplier(id),
 
-     CONSTRAINT fk_invoice_customer
-         FOREIGN KEY (customerId)
-             REFERENCES customer(id),
+    CONSTRAINT fk_invoice_customer
+        FOREIGN KEY (customer_id)
+            REFERENCES customer(id),
 
-     CONSTRAINT fk_invoice_offer
-         FOREIGN KEY (offerId)
-             REFERENCES offer(id)
+    CONSTRAINT fk_invoice_offer
+        FOREIGN KEY (offer_id)
+            REFERENCES offer(id)
 );
