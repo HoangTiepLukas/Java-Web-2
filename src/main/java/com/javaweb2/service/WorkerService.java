@@ -47,6 +47,7 @@ public class WorkerService {
 	private WorkerDTO mapToDTO(Worker worker) {
 		return WorkerDTO.builder()
 				.id(worker.getId())
+				.supplierId(worker.getSupplier() == null ? null : worker.getSupplier().getId())
 				.name(worker.getName())
 				.email(worker.getEmail())
 				.role(worker.getRole())

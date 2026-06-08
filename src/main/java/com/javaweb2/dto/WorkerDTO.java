@@ -8,17 +8,15 @@ import java.time.LocalDateTime;
 @Getter
 @Builder
 public class WorkerDTO {
-    public Long id;
+    private Long id;
 
-    public Long supplierId;
+    private Long supplierId;
 
-    public String name;
+    private String name;
 
-    public String email;
+    private String email;
 
-    public String password;
+    private String role;
 
-    public String role;
-
-    public LocalDateTime createdAt;
+    private LocalDateTime createdAt;
 }
