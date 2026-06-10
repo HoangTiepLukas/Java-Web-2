@@ -14,8 +14,6 @@ public class SupplierDTO {
 
     private String email;
 
-    private String password;
-
     private String description;
 
     private String services;
